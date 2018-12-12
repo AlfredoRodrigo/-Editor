@@ -3,18 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package interfaces;
+package visual;
 
-import java.io.File;
 import javax.swing.JTextPane;
+import javax.swing.text.StyledDocument;
 
 /**
  *
  * @author Alfredo Silva
  */
-public interface Estrategia {
-    public String lerDocumento();
-    public void escreverDocumento(JTextPane pagina);
-    public File getArquivo();
-    public void setArquivo(File arquivo);
+public interface Observador {
+    public void atualizar(StyledDocument conteudoPagina);
 }

@@ -20,7 +20,7 @@ import javax.swing.JTextPane;
  *
  * @author Alfredo Silva
  */
-public class InterageTXT implements interfaces.Estrategia {
+public class InterageTXT implements visual.Estrategia {
     
     private javax.swing.JFileChooser fileSelector = new javax.swing.JFileChooser();
     private File arquivo;

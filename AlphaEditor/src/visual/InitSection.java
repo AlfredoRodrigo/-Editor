@@ -5,8 +5,6 @@
  */
 package visual;
 
-import interfaces.Observado;
-import interfaces.Observador;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -134,6 +132,11 @@ public class InitSection extends javax.swing.JFrame implements Observado {
         });
 
         botaoCriarSecao.setText("Criar seção");
+        botaoCriarSecao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoCriarSecaoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout painelLoginLayout = new javax.swing.GroupLayout(painelLogin);
         painelLogin.setLayout(painelLoginLayout);
@@ -258,6 +261,10 @@ public class InitSection extends javax.swing.JFrame implements Observado {
             botaoCriarSecao.setEnabled(false);
         }
     }//GEN-LAST:event_botaoRadioCriarSecaoActionPerformed
+
+    private void botaoCriarSecaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCriarSecaoActionPerformed
+        botaoEntrarActionPerformed(evt);
+    }//GEN-LAST:event_botaoCriarSecaoActionPerformed
 
     /**
      * @param args the command line arguments

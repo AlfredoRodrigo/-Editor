@@ -26,8 +26,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.rtf.RTFEditorKit;
-import interfaces.Observador;
-import interfaces.Observado;
 import java.sql.Connection;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -594,7 +592,7 @@ public class Body extends javax.swing.JFrame implements Observador {
     private Style italico;
     private static String nomeObservador;
     private static Observado instancia;
-    private interfaces.Estrategia estrategia;
+    private visual.Estrategia estrategia;
     private Facade fachada = new Facade(this);
     // End of personal variables declaration
 

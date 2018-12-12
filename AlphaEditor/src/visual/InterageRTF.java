@@ -20,7 +20,7 @@ import javax.swing.text.rtf.RTFEditorKit;
  *
  * @author Alfredo Silva
  */
-public class InterageRTF implements interfaces.Estrategia {
+public class InterageRTF implements visual.Estrategia {
     
     private javax.swing.JFileChooser fileSelector = new javax.swing.JFileChooser();
     private File arquivo;
