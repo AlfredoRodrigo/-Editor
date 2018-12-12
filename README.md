@@ -1,2 +1,2 @@
-# -Editor
+# AlphaEditor
 Editor de texto compartilhado
