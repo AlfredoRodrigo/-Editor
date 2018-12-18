@@ -503,8 +503,8 @@ public class Body extends javax.swing.JFrame implements Observador {
         // onde poderei chamar pai.notificarObservadores()
         fachada.modoCodigo();
         try {
-            atualizar(this.pagina.getStyledDocument());
             envia(this.pagina.getText());
+            atualizar(this.pagina.getStyledDocument());
         } catch (NullPointerException ex) {
             //JOptionPane.showMessageDialog(this, "O usuário provedor do documento encerrou a seção.\nEste documento não pode mais ser editado por você.", "Seção encerrada", JOptionPane.ERROR_MESSAGE);
         }
@@ -541,7 +541,7 @@ public class Body extends javax.swing.JFrame implements Observador {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Body(nomeObservador, instancia, pagina, conexao).setVisible(true);
-                new Thread(conexao.new Envia(pagina.getText())).start();
+                //new Thread(conexao.new Envia(pagina.getText())).start();
             }
         });
     }
