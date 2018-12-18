@@ -80,8 +80,7 @@ public class Body extends javax.swing.JFrame implements Observador {
     @Override
     public void atualizar(StyledDocument conteudoPagina) {
         String texto = this.pagina.getText();
-        this.pagina.setStyledDocument(conteudoPagina);
-        envia(this.pagina.getText());
+        //this.pagina.setStyledDocument(conteudoPagina);
         this.pagina.setText((conexao.getMensagem() != null ? texto + conexao.getMensagem() : texto));
         // DEVE SER MODIFICADO PARA ATUALIZAR EM REDE
     }
@@ -175,8 +174,8 @@ public class Body extends javax.swing.JFrame implements Observador {
 
         pagina.setMargin(new java.awt.Insets(2, 100, 2, 100));
         pagina.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                paginaKeyTyped(evt);
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                paginaKeyReleased(evt);
             }
         });
         painelDeRolagemPagina.setViewportView(pagina);
@@ -430,19 +429,6 @@ public class Body extends javax.swing.JFrame implements Observador {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void paginaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_paginaKeyTyped
-        // ACHO QUE TEM QUE SER UM SINGLETON
-        // Instancia única do pai, para ser usado aqui,
-        // onde poderei chamar pai.notificarObservadores()
-        fachada.modoCodigo();
-        try {
-            atualizar(this.pagina.getStyledDocument());
-            //instancia.notificarObservadores();
-        } catch (NullPointerException ex) {
-            //JOptionPane.showMessageDialog(this, "O usuário provedor do documento encerrou a seção.\nEste documento não pode mais ser editado por você.", "Seção encerrada", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_paginaKeyTyped
-
     private void controleDeslizanteMargemDireitaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_controleDeslizanteMargemDireitaStateChanged
         bordaDireita = controleDeslizanteMargemDireita.getValue();
         pagina.setBorder(BorderFactory.createCompoundBorder(bordaPagina, BorderFactory.createEmptyBorder(2, bordaEsquerda, 2, bordaDireita)));
@@ -510,6 +496,19 @@ public class Body extends javax.swing.JFrame implements Observador {
             JOptionPane.showMessageDialog(this, "Linguagem de programação aceita: Python", "Modo código", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_botaoModoCodigoActionPerformed
+
+    private void paginaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_paginaKeyReleased
+        // ACHO QUE TEM QUE SER UM SINGLETON
+        // Instancia única do pai, para ser usado aqui,
+        // onde poderei chamar pai.notificarObservadores()
+        fachada.modoCodigo();
+        try {
+            atualizar(this.pagina.getStyledDocument());
+            envia(this.pagina.getText());
+        } catch (NullPointerException ex) {
+            //JOptionPane.showMessageDialog(this, "O usuário provedor do documento encerrou a seção.\nEste documento não pode mais ser editado por você.", "Seção encerrada", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_paginaKeyReleased
     int var = 0;        
     /**
      * @param args the command line arguments
