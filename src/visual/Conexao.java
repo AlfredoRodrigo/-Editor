@@ -64,6 +64,7 @@ public class Conexao {
                                 msg += (char) b[i];
                             }
                         }
+                        InitSection.getInstancia().getPagina().setText(InitSection.getInstancia().getPagina().getText() + msg);
                     } catch (Exception e) {
                         System.out.println("erro");
                         try {

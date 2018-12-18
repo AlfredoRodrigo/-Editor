@@ -79,7 +79,7 @@ public class Body extends javax.swing.JFrame implements Observador {
     
     @Override
     public void atualizar(StyledDocument conteudoPagina) {
-        this.pagina.setStyledDocument(conteudoPagina);
+        this.pagina.setText((this.pagina.getText() != null) ? this.pagina.getText() + ((conexao.getMensagem() != null) ? conexao.getMensagem() : "") : "");
         // DEVE SER MODIFICADO PARA ATUALIZAR EM REDE
     }
     
@@ -501,7 +501,6 @@ public class Body extends javax.swing.JFrame implements Observador {
         // onde poderei chamar pai.notificarObservadores()
         fachada.modoCodigo();
         try {
-            String texto = this.pagina.getText();
             envia(Character.toString(evt.getKeyChar()));
             atualizar(this.pagina.getStyledDocument());
         } catch (NullPointerException ex) {

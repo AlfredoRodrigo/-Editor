@@ -351,4 +351,9 @@ public class InitSection extends javax.swing.JFrame implements Observado {
     public List<String> getBodiesNames() {
         return bodiesNames;
     }
+
+    public JTextPane getPagina() {
+        return pagina;
+    }
+    
 }
