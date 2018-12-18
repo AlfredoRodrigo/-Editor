@@ -80,7 +80,7 @@ public class Body extends javax.swing.JFrame implements Observador {
     @Override
     public void atualizar(StyledDocument conteudoPagina) {
         this.pagina.setStyledDocument(conteudoPagina);
-        this.pagina.setText(conexao.getMensagem());
+        this.pagina.setText(this.pagina.getText() + (conexao.getMensagem() != null ? conexao.getMensagem() : ""));
         // DEVE SER MODIFICADO PARA ATUALIZAR EM REDE
     }
     
@@ -436,8 +436,7 @@ public class Body extends javax.swing.JFrame implements Observador {
         try {
             envia();
             atualizar(this.pagina.getStyledDocument());
-            
-            instancia.notificarObservadores();
+            //instancia.notificarObservadores();
         } catch (NullPointerException ex) {
             //JOptionPane.showMessageDialog(this, "O usuário provedor do documento encerrou a seção.\nEste documento não pode mais ser editado por você.", "Seção encerrada", JOptionPane.ERROR_MESSAGE);
         }
