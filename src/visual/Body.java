@@ -79,9 +79,10 @@ public class Body extends javax.swing.JFrame implements Observador {
     
     @Override
     public void atualizar(StyledDocument conteudoPagina) {
+        String texto = this.pagina.getText();
         this.pagina.setStyledDocument(conteudoPagina);
-        envia();
-        this.pagina.setText(pagina.getText() + (conexao.getMensagem() != null ? conexao.getMensagem() : ""));
+        envia(this.pagina.getText());
+        this.pagina.setText(/*texto + */(conexao.getMensagem() != null ? conexao.getMensagem() : ""));
         // DEVE SER MODIFICADO PARA ATUALIZAR EM REDE
     }
     
@@ -541,10 +542,7 @@ public class Body extends javax.swing.JFrame implements Observador {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Body(nomeObservador, instancia, pagina, conexao).setVisible(true);
-                Conexao.Envia envia = conexao.new Envia(pagina.getText());
-                conexao.envia(pagina.getText());
-                Thread t = new Thread(envia);
-                t.start();
+                new Thread(conexao.new Envia(pagina.getText())).start();
             }
         });
     }
@@ -855,11 +853,11 @@ public class Body extends javax.swing.JFrame implements Observador {
         return comboTamanhoFonte;
     }
     
-    private void envia() {
+    private void envia(String texto) {
         if (!pagina.getText().isEmpty()) {
             try{
                 if (!InetAddress.getLocalHost().getHostAddress().equalsIgnoreCase(conexao.getIp())) {
-                    conexao.envia(pagina.getText());
+                    conexao.envia(texto);
                     //pagina.setText("");
                 } else {
                     //pagina.setText("");
