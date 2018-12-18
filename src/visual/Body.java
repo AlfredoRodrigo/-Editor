@@ -79,7 +79,7 @@ public class Body extends javax.swing.JFrame implements Observador {
     
     @Override
     public void atualizar(StyledDocument conteudoPagina) {
-        this.pagina.setText((this.pagina.getText() != null) ? this.pagina.getText() + ((conexao.getMensagem() != null) ? conexao.getMensagem() : "") : "");
+        this.pagina.setStyledDocument(conteudoPagina);
         // DEVE SER MODIFICADO PARA ATUALIZAR EM REDE
     }
     

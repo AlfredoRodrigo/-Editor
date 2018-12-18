@@ -17,11 +17,7 @@ import visual.LerTXT;
 public class TesteLeitura {
     public static void main(String[] args) {
         String texto = "Oi, alfredo!";
-        System.out.println(texto);
-        System.out.println(texto.length());
-        texto = texto.replace(", alfredo!", "");
-        System.out.println(texto);
-        System.out.println(texto.length());
+        System.out.println(texto.substring(0, texto.length() - 1));
     }
     
 }
