@@ -81,6 +81,7 @@ public class Body extends javax.swing.JFrame implements Observador {
     public void atualizar(StyledDocument conteudoPagina) {
         this.pagina.setStyledDocument(conteudoPagina);
         envia();
+        this.pagina.setText(pagina.getText() + (conexao.getMensagem() != null ? conexao.getMensagem() : ""));
         // DEVE SER MODIFICADO PARA ATUALIZAR EM REDE
     }
     
