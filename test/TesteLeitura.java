@@ -1,6 +1,8 @@
 
 import java.io.File;
-import visual.InterageTXT;
+import java.security.AccessController;
+import sun.awt.OSInfo;
+import visual.LerTXT;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,6 +15,13 @@ import visual.InterageTXT;
  * @author Alfredo Silva
  */
 public class TesteLeitura {
-    File arquivo = new File();
-    InterageTXT interage = new InterageTXT(arquivo);
+    public static void main(String[] args) {
+        String texto = "Oi, alfredo!";
+        System.out.println(texto);
+        System.out.println(texto.length());
+        texto = texto.replace(", alfredo!", "");
+        System.out.println(texto);
+        System.out.println(texto.length());
+    }
+    
 }

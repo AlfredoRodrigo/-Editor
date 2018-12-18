@@ -9,7 +9,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.text.StyledDocument;
 
 /**
@@ -18,39 +25,104 @@ import javax.swing.text.StyledDocument;
  */
 public class Conexao {
 
-    private Socket cliente;
-    private String host; //nome do host (ipconfig /all)
-    private int porta;
-    private String nome;
+    private String ip;
+    private int porta; //nome do host (ipconfig /all)
+    private String name;
+    private String mensagem;
     
-    public Conexao(String host, int porta, String nome) {
-        this.host = host;
+    public Conexao(String ip, int porta, String nome) {
+        this.ip = ip;
         this.porta = porta;
-        this.nome = nome;
+        this.name = nome;
+        new Thread(new Recebe()).start();
     }
     
-    public Serializable recebeConteudoPagina() throws IOException, ClassNotFoundException {
-        ObjectInputStream entrada = new ObjectInputStream(cliente.getInputStream());
-        return (Serializable)entrada.readObject();
+    class Recebe implements Runnable {
+
+        byte[] dadosReceber = new byte[255];
+        boolean erro = false;
+        DatagramSocket socket = null;
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    socket = new DatagramSocket(getPorta());
+                } catch (SocketException ex) {
+                    Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                erro = false;
+                while (!erro) {
+                    DatagramPacket pacoteRecebido = new DatagramPacket(dadosReceber, dadosReceber.length);
+                    try {
+                        socket.receive(pacoteRecebido);
+                        byte[] b = pacoteRecebido.getData();
+                        String msg = "";
+                        for (int i = 0; i < b.length; i++) {
+                            if (b[i] != 0) {
+                                msg += (char) b[i];
+                            }
+                        }
+                        notifica(msg);
+                    } catch (Exception e) {
+                        System.out.println("erro");
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        erro = true;
+                    }
+                }
+            }
+        }
     }
     
-    public void enviaConteudoPagina(StyledDocument styledDocument) throws IOException {
-        ObjectOutputStream saida = new ObjectOutputStream(cliente.getOutputStream());
-        saida.flush();
-        saida.writeObject(styledDocument);
-        saida.flush();
+    class Envia implements Runnable {
+
+        String texto;
+
+        public Envia(String texto) {
+            this.texto = texto;
+        }
+
+        @Override
+        public void run() {
+
+            byte[] dados = texto.getBytes();
+
+            try {
+                DatagramSocket clientSocket = new DatagramSocket();
+                InetAddress addr = InetAddress.getByName(getIp());
+                DatagramPacket pacote = new DatagramPacket(dados, dados.length, addr, getPorta());
+                clientSocket.send(pacote);
+                clientSocket.close();
+            } catch (SocketException ex) {
+                Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-    
-    public String getHost() {
-        return this.host;
-    }
-    
+
     public int getPorta() {
-        return this.porta;
+        return porta;
+    }
+
+    public String getIp() {
+        return ip;
     }
     
-    public String getNome() {
-        return this.nome;
+    public void notifica(String mensagem) {
+        this.mensagem = mensagem;
+        //notificar observadores
+        //notifyObservers();
+    }
+    
+    public void envia(String texto) {
+        new Thread(new Envia(texto)).start();
     }
     
 }

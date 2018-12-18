@@ -6,14 +6,18 @@
 package visual;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.border.Border;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,11 +32,13 @@ import javax.swing.text.StyledDocument;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.sql.Connection;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import javax.swing.text.Document;
 
 /**
  *
@@ -43,10 +49,11 @@ public class Body extends javax.swing.JFrame implements Observador {
     /**
      * Creates new form Body
      */
-    public Body(String nomeObservador, Observado observado, JTextPane pagina) {
+    public Body(String nomeObservador, Observado observado, JTextPane pagina, Conexao conexao) {
         this.nomeObservador = nomeObservador;
         this.instancia = observado;
         this.pagina = pagina;
+        this.conexao = conexao;
         observado.incluirObservador(this);
         pagina.setStyledDocument(pagina.getStyledDocument());
         initComponents();
@@ -85,13 +92,21 @@ public class Body extends javax.swing.JFrame implements Observador {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        painelAbasSuperiores4 = new javax.swing.JTabbedPane();
-        abaArquivo4 = new javax.swing.JPanel();
-        botaoSalvar4 = new javax.swing.JButton();
-        botaoSalvarComo4 = new javax.swing.JButton();
-        separadorArquivo5 = new javax.swing.JSeparator();
-        botaoEncerrarSecao4 = new javax.swing.JButton();
-        comboAbrir = new javax.swing.JComboBox<>();
+        painelBackground = new javax.swing.JPanel();
+        barraDeStatus = new javax.swing.JPanel();
+        labelBarraDeStatus = new javax.swing.JLabel();
+        controleDeslizanteMargemEsquerda = new javax.swing.JSlider();
+        controleDeslizanteMargemDireita = new javax.swing.JSlider();
+        painelDeRolagemPagina = new javax.swing.JScrollPane();
+        pagina = new javax.swing.JTextPane();
+        painelSuperior = new javax.swing.JPanel();
+        painelAbasSuperiores = new javax.swing.JTabbedPane();
+        abaArquivo = new javax.swing.JPanel();
+        botaoAbrir = new javax.swing.JButton();
+        botaoSalvar = new javax.swing.JButton();
+        botaoSalvarComo = new javax.swing.JButton();
+        separadorArquivo = new javax.swing.JSeparator();
+        botaoEncerrarSecao = new javax.swing.JButton();
         abaEditar = new javax.swing.JPanel();
         botaoNegrito = new javax.swing.JToggleButton();
         botaoItalico = new javax.swing.JToggleButton();
@@ -105,87 +120,154 @@ public class Body extends javax.swing.JFrame implements Observador {
         botaoLimparFormatacao = new javax.swing.JButton();
         abaVisualizar = new javax.swing.JPanel();
         botaoModoNoturno = new javax.swing.JToggleButton();
-        barraDeStatus = new javax.swing.JPanel();
-        labelBarraDeStatus = new javax.swing.JLabel();
-        controleDeslizanteMargemEsquerda = new javax.swing.JSlider();
-        controleDeslizanteMargemDireita = new javax.swing.JSlider();
-        painelDeRolagemPagina = new javax.swing.JScrollPane();
-        pagina = new javax.swing.JTextPane();
-        painelFundoEsquerdo = new javax.swing.JPanel();
-        painelFundoDireito = new javax.swing.JPanel();
-        painelSuperior1 = new javax.swing.JPanel();
-        painelSuperior2 = new javax.swing.JPanel();
+        botaoModoCodigo = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("αEditor");
         setName("body"); // NOI18N
         setSize(new java.awt.Dimension(0, 0));
 
-        botaoSalvar4.setText("Salvar");
-        botaoSalvar4.addActionListener(new java.awt.event.ActionListener() {
+        barraDeStatus.setBackground(new java.awt.Color(221, 217, 209));
+        barraDeStatus.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+
+        labelBarraDeStatus.setText("Lembre-se de salvar o arquivo.");
+
+        javax.swing.GroupLayout barraDeStatusLayout = new javax.swing.GroupLayout(barraDeStatus);
+        barraDeStatus.setLayout(barraDeStatusLayout);
+        barraDeStatusLayout.setHorizontalGroup(
+            barraDeStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(barraDeStatusLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelBarraDeStatus)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        barraDeStatusLayout.setVerticalGroup(
+            barraDeStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(barraDeStatusLayout.createSequentialGroup()
+                .addComponent(labelBarraDeStatus)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        labelBarraDeStatus.getAccessibleContext().setAccessibleName("");
+
+        controleDeslizanteMargemEsquerda.setMaximum(379);
+        controleDeslizanteMargemEsquerda.setToolTipText("Margem esquerda");
+        controleDeslizanteMargemEsquerda.setValue(100);
+        controleDeslizanteMargemEsquerda.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        controleDeslizanteMargemEsquerda.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                controleDeslizanteMargemEsquerdaStateChanged(evt);
+            }
+        });
+
+        controleDeslizanteMargemDireita.setMaximum(379);
+        controleDeslizanteMargemDireita.setToolTipText("Margem direita");
+        controleDeslizanteMargemDireita.setValue(100);
+        controleDeslizanteMargemDireita.setInverted(true);
+        controleDeslizanteMargemDireita.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                controleDeslizanteMargemDireitaStateChanged(evt);
+            }
+        });
+
+        pagina.setMargin(new java.awt.Insets(2, 100, 2, 100));
+        pagina.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                paginaKeyTyped(evt);
+            }
+        });
+        painelDeRolagemPagina.setViewportView(pagina);
+
+        javax.swing.GroupLayout painelBackgroundLayout = new javax.swing.GroupLayout(painelBackground);
+        painelBackground.setLayout(painelBackgroundLayout);
+        painelBackgroundLayout.setHorizontalGroup(
+            painelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(barraDeStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(painelBackgroundLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(painelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(painelDeRolagemPagina)
+                    .addGroup(painelBackgroundLayout.createSequentialGroup()
+                        .addComponent(controleDeslizanteMargemEsquerda, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(controleDeslizanteMargemDireita, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        painelBackgroundLayout.setVerticalGroup(
+            painelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painelBackgroundLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(painelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(controleDeslizanteMargemEsquerda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(controleDeslizanteMargemDireita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addComponent(painelDeRolagemPagina, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(barraDeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        botaoAbrir.setText("Abrir");
+        botaoAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoAbrirActionPerformed(evt);
+            }
+        });
+
+        botaoSalvar.setText("Salvar");
+        botaoSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoSalvarActionPerformed(evt);
             }
         });
 
-        botaoSalvarComo4.setText("Salvar como");
-        botaoSalvarComo4.addActionListener(new java.awt.event.ActionListener() {
+        botaoSalvarComo.setText("Salvar como");
+        botaoSalvarComo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoSalvarComoActionPerformed(evt);
             }
         });
 
-        separadorArquivo5.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        separadorArquivo.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        botaoEncerrarSecao4.setText("Encerrar seção");
-        botaoEncerrarSecao4.addActionListener(new java.awt.event.ActionListener() {
+        botaoEncerrarSecao.setText("Encerrar seção");
+        botaoEncerrarSecao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoEncerrarSecaoActionPerformed(evt);
             }
         });
 
-        comboAbrir.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Abrir", "TXT", "RTF" }));
-        comboAbrir.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                comboAbrirItemStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout abaArquivo4Layout = new javax.swing.GroupLayout(abaArquivo4);
-        abaArquivo4.setLayout(abaArquivo4Layout);
-        abaArquivo4Layout.setHorizontalGroup(
-            abaArquivo4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(abaArquivo4Layout.createSequentialGroup()
+        javax.swing.GroupLayout abaArquivoLayout = new javax.swing.GroupLayout(abaArquivo);
+        abaArquivo.setLayout(abaArquivoLayout);
+        abaArquivoLayout.setHorizontalGroup(
+            abaArquivoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(abaArquivoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(comboAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(botaoSalvar4)
+                .addComponent(botaoAbrir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botaoSalvarComo4)
+                .addComponent(botaoSalvar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(separadorArquivo5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(botaoSalvarComo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botaoEncerrarSecao4)
-                .addContainerGap(420, Short.MAX_VALUE))
+                .addComponent(separadorArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botaoEncerrarSecao)
+                .addContainerGap(669, Short.MAX_VALUE))
         );
-        abaArquivo4Layout.setVerticalGroup(
-            abaArquivo4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(abaArquivo4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(abaArquivo4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, abaArquivo4Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(abaArquivo4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(botaoEncerrarSecao4)
-                            .addGroup(abaArquivo4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(botaoSalvar4)
-                                .addComponent(botaoSalvarComo4))
-                            .addComponent(separadorArquivo5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(comboAbrir))
+        abaArquivoLayout.setVerticalGroup(
+            abaArquivoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(abaArquivoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(abaArquivoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(botaoEncerrarSecao)
+                    .addGroup(abaArquivoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(botaoSalvarComo)
+                        .addComponent(botaoAbrir)
+                        .addComponent(botaoSalvar))
+                    .addComponent(separadorArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        painelAbasSuperiores4.addTab("Arquivo", abaArquivo4);
+        painelAbasSuperiores.addTab("Arquivo", abaArquivo);
 
         botaoNegrito.setText("<html><b>N</b></html>");
         botaoNegrito.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -251,7 +333,7 @@ public class Body extends javax.swing.JFrame implements Observador {
                 .addComponent(botaoAplicar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botaoLimparFormatacao)
-                .addContainerGap(820, Short.MAX_VALUE))
+                .addContainerGap(478, Short.MAX_VALUE))
         );
         abaEditarLayout.setVerticalGroup(
             abaEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,12 +357,19 @@ public class Body extends javax.swing.JFrame implements Observador {
                 .addContainerGap())
         );
 
-        painelAbasSuperiores4.addTab("Editar", abaEditar);
+        painelAbasSuperiores.addTab("Editar", abaEditar);
 
         botaoModoNoturno.setText("Modo noturno");
         botaoModoNoturno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoModoNoturnoActionPerformed(evt);
+            }
+        });
+
+        botaoModoCodigo.setText("Modo código");
+        botaoModoCodigo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoModoCodigoActionPerformed(evt);
             }
         });
 
@@ -291,153 +380,48 @@ public class Body extends javax.swing.JFrame implements Observador {
             .addGroup(abaVisualizarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(botaoModoNoturno)
-                .addContainerGap(1252, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botaoModoCodigo)
+                .addContainerGap(811, Short.MAX_VALUE))
         );
         abaVisualizarLayout.setVerticalGroup(
             abaVisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, abaVisualizarLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(botaoModoNoturno)
+                .addGroup(abaVisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botaoModoNoturno)
+                    .addComponent(botaoModoCodigo))
                 .addContainerGap())
         );
 
-        painelAbasSuperiores4.addTab("Visualizar", abaVisualizar);
+        painelAbasSuperiores.addTab("Visualizar", abaVisualizar);
 
-        painelAbasSuperiores4.setSelectedIndex(1);
+        painelAbasSuperiores.setSelectedIndex(1);
 
-        barraDeStatus.setBackground(new java.awt.Color(221, 217, 209));
-        barraDeStatus.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
-
-        labelBarraDeStatus.setText("Lembre-se de salvar o arquivo.");
-
-        javax.swing.GroupLayout barraDeStatusLayout = new javax.swing.GroupLayout(barraDeStatus);
-        barraDeStatus.setLayout(barraDeStatusLayout);
-        barraDeStatusLayout.setHorizontalGroup(
-            barraDeStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(barraDeStatusLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelBarraDeStatus)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout painelSuperiorLayout = new javax.swing.GroupLayout(painelSuperior);
+        painelSuperior.setLayout(painelSuperiorLayout);
+        painelSuperiorLayout.setHorizontalGroup(
+            painelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(painelAbasSuperiores)
         );
-        barraDeStatusLayout.setVerticalGroup(
-            barraDeStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(barraDeStatusLayout.createSequentialGroup()
-                .addComponent(labelBarraDeStatus)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        labelBarraDeStatus.getAccessibleContext().setAccessibleName("");
-
-        controleDeslizanteMargemEsquerda.setMaximum(379);
-        controleDeslizanteMargemEsquerda.setToolTipText("Margem esquerda");
-        controleDeslizanteMargemEsquerda.setValue(100);
-        controleDeslizanteMargemEsquerda.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        controleDeslizanteMargemEsquerda.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                controleDeslizanteMargemEsquerdaStateChanged(evt);
-            }
-        });
-
-        controleDeslizanteMargemDireita.setMaximum(379);
-        controleDeslizanteMargemDireita.setToolTipText("Margem direita");
-        controleDeslizanteMargemDireita.setValue(100);
-        controleDeslizanteMargemDireita.setInverted(true);
-        controleDeslizanteMargemDireita.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                controleDeslizanteMargemDireitaStateChanged(evt);
-            }
-        });
-
-        pagina.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                paginaKeyTyped(evt);
-            }
-        });
-        painelDeRolagemPagina.setViewportView(pagina);
-
-        javax.swing.GroupLayout painelFundoEsquerdoLayout = new javax.swing.GroupLayout(painelFundoEsquerdo);
-        painelFundoEsquerdo.setLayout(painelFundoEsquerdoLayout);
-        painelFundoEsquerdoLayout.setHorizontalGroup(
-            painelFundoEsquerdoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        painelFundoEsquerdoLayout.setVerticalGroup(
-            painelFundoEsquerdoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout painelFundoDireitoLayout = new javax.swing.GroupLayout(painelFundoDireito);
-        painelFundoDireito.setLayout(painelFundoDireitoLayout);
-        painelFundoDireitoLayout.setHorizontalGroup(
-            painelFundoDireitoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        painelFundoDireitoLayout.setVerticalGroup(
-            painelFundoDireitoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout painelSuperior1Layout = new javax.swing.GroupLayout(painelSuperior1);
-        painelSuperior1.setLayout(painelSuperior1Layout);
-        painelSuperior1Layout.setHorizontalGroup(
-            painelSuperior1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        painelSuperior1Layout.setVerticalGroup(
-            painelSuperior1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 9, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout painelSuperior2Layout = new javax.swing.GroupLayout(painelSuperior2);
-        painelSuperior2.setLayout(painelSuperior2Layout);
-        painelSuperior2Layout.setHorizontalGroup(
-            painelSuperior2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        painelSuperior2Layout.setVerticalGroup(
-            painelSuperior2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 13, Short.MAX_VALUE)
+        painelSuperiorLayout.setVerticalGroup(
+            painelSuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(painelAbasSuperiores, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(painelAbasSuperiores4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(painelFundoEsquerdo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(controleDeslizanteMargemEsquerda, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(controleDeslizanteMargemDireita, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(painelSuperior2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(painelDeRolagemPagina)
-                    .addComponent(painelSuperior1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0)
-                .addComponent(painelFundoDireito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(barraDeStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(painelBackground, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(painelSuperior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(painelAbasSuperiores4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(painelFundoEsquerdo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(painelSuperior1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(controleDeslizanteMargemEsquerda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(controleDeslizanteMargemDireita, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, 0)
-                        .addComponent(painelSuperior2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(painelDeRolagemPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 555, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(painelFundoDireito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(painelSuperior, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(barraDeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(painelBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -447,8 +431,10 @@ public class Body extends javax.swing.JFrame implements Observador {
         // ACHO QUE TEM QUE SER UM SINGLETON
         // Instancia única do pai, para ser usado aqui,
         // onde poderei chamar pai.notificarObservadores()
+        fachada.modoCodigo();
         try {
-            atualizar(pagina.getStyledDocument());
+            atualizar(this.pagina.getStyledDocument());
+            envia();
             instancia.notificarObservadores();
         } catch (NullPointerException ex) {
             //JOptionPane.showMessageDialog(this, "O usuário provedor do documento encerrou a seção.\nEste documento não pode mais ser editado por você.", "Seção encerrada", JOptionPane.ERROR_MESSAGE);
@@ -486,34 +472,43 @@ public class Body extends javax.swing.JFrame implements Observador {
     }//GEN-LAST:event_botaoEncerrarSecaoActionPerformed
 
     private void botaoSalvarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarComoActionPerformed
-        definirEstrategia();
-        estrategia.escreverDocumento(pagina);
+        salvarRTF(true);
         atualizar(pagina.getStyledDocument());
+        instancia.notificarObservadores();
         atualizaLabelBarraDeStatus(arquivo);
     }//GEN-LAST:event_botaoSalvarComoActionPerformed
 
-    private void botaoSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarActionPerformed
-        definirEstrategia();
-        estrategia.escreverDocumento(pagina);
-        atualizar(pagina.getStyledDocument());
-        atualizaLabelBarraDeStatus(arquivo);
-    }//GEN-LAST:event_botaoSalvarActionPerformed
-
     private void botaoModoNoturnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoModoNoturnoActionPerformed
-        fachada.pintar();
+        fachada.modoNoturno();
     }//GEN-LAST:event_botaoModoNoturnoActionPerformed
 
-    private void comboAbrirItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboAbrirItemStateChanged
-        if (comboAbrir.getSelectedIndex() != 0) {
-            definirEstrategia();
-            String texto = estrategia.lerDocumento();
-            pagina.setText(texto);
-            atualizar(pagina.getStyledDocument());
-            this.arquivo = estrategia.getArquivo();
-            atualizaLabelBarraDeStatus(arquivo);
+    private void botaoAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAbrirActionPerformed
+        definirEstrategiaLeitura();
+        //this.pagina = leitor.executar(this.arquivo);
+        this.pagina.setText(leitor.executar(this.arquivo).getText());
+        atualizar(leitor.executar(this.arquivo).getStyledDocument());
+        instancia.notificarObservadores();
+        //this.arquivo = estrategia.getArquivo();
+        atualizaLabelBarraDeStatus(this.arquivo);
+    }//GEN-LAST:event_botaoAbrirActionPerformed
+
+    private void botaoSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarActionPerformed
+        if (arquivo.getPath().endsWith(".txt")) {
+            salvarTXT(false);
+        } else {
+            salvarRTF(false);
         }
-    }//GEN-LAST:event_comboAbrirItemStateChanged
-        
+        instancia.notificarObservadores();
+        atualizaLabelBarraDeStatus(this.arquivo);
+    }//GEN-LAST:event_botaoSalvarActionPerformed
+
+    private void botaoModoCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoModoCodigoActionPerformed
+        fachada.modoCodigo();
+        if (botaoModoCodigo.isSelected()) {
+            JOptionPane.showMessageDialog(this, "Linguagem de programação aceita: Python", "Modo código", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_botaoModoCodigoActionPerformed
+    int var = 0;        
     /**
      * @param args the command line arguments
      */
@@ -540,30 +535,31 @@ public class Body extends javax.swing.JFrame implements Observador {
             java.util.logging.Logger.getLogger(Body.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-    
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Body(nomeObservador, instancia, pagina).setVisible(true);
+                new Body(nomeObservador, instancia, pagina, conexao).setVisible(true);
             }
         });
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel abaArquivo4;
+    private javax.swing.JPanel abaArquivo;
     private javax.swing.JPanel abaEditar;
     private javax.swing.JPanel abaVisualizar;
     private javax.swing.JPanel barraDeStatus;
+    private javax.swing.JButton botaoAbrir;
     private javax.swing.JButton botaoAplicar;
-    private javax.swing.JButton botaoEncerrarSecao4;
+    private javax.swing.JButton botaoEncerrarSecao;
     private javax.swing.JToggleButton botaoItalico;
     private javax.swing.JButton botaoLimparFormatacao;
+    private javax.swing.JToggleButton botaoModoCodigo;
     private javax.swing.JToggleButton botaoModoNoturno;
     private javax.swing.JToggleButton botaoNegrito;
-    private javax.swing.JButton botaoSalvar4;
-    private javax.swing.JButton botaoSalvarComo4;
+    private javax.swing.JButton botaoSalvar;
+    private javax.swing.JButton botaoSalvarComo;
     private javax.swing.JToggleButton botaoSublinhado;
-    private javax.swing.JComboBox<String> comboAbrir;
     private javax.swing.JComboBox<String> comboCorFonte;
     private javax.swing.JComboBox<String> comboFonte;
     private javax.swing.JComboBox<String> comboTamanhoFonte;
@@ -571,13 +567,11 @@ public class Body extends javax.swing.JFrame implements Observador {
     private javax.swing.JSlider controleDeslizanteMargemEsquerda;
     private javax.swing.JLabel labelBarraDeStatus;
     private static javax.swing.JTextPane pagina;
-    private javax.swing.JTabbedPane painelAbasSuperiores4;
+    private javax.swing.JTabbedPane painelAbasSuperiores;
+    private javax.swing.JPanel painelBackground;
     private javax.swing.JScrollPane painelDeRolagemPagina;
-    private javax.swing.JPanel painelFundoDireito;
-    private javax.swing.JPanel painelFundoEsquerdo;
-    private javax.swing.JPanel painelSuperior1;
-    private javax.swing.JPanel painelSuperior2;
-    private javax.swing.JSeparator separadorArquivo5;
+    private javax.swing.JPanel painelSuperior;
+    private javax.swing.JSeparator separadorArquivo;
     private javax.swing.JSeparator separadorEditar1;
     private javax.swing.JSeparator separadorEditar2;
     // End of variables declaration//GEN-END:variables
@@ -592,7 +586,8 @@ public class Body extends javax.swing.JFrame implements Observador {
     private Style italico;
     private static String nomeObservador;
     private static Observado instancia;
-    private visual.Estrategia estrategia;
+    private static Conexao conexao;
+    private visual.EstrategiaDeLeitura leitor;
     private Facade fachada = new Facade(this);
     // End of personal variables declaration
 
@@ -671,9 +666,9 @@ public class Body extends javax.swing.JFrame implements Observador {
     
     public void atualizaLabelBarraDeStatus(File file) {
         if (file != null) {
-            this.labelBarraDeStatus.setText(file.getPath());
+            this.labelBarraDeStatus.setText(file.getPath() + ". Lembre-se de salvar o seu documento.");
         } else {
-            this.labelBarraDeStatus.setText("Lembre-se de salvar o arquivo.");
+            this.labelBarraDeStatus.setText("Lembre-se de salvar o seu documento.");
         }
     }
         
@@ -756,30 +751,81 @@ public class Body extends javax.swing.JFrame implements Observador {
         }
     }
     
-    public void definirEstrategia() {
-        if (comboAbrir.getSelectedItem().equals("TXT")) {
-            estrategia = new InterageTXT(arquivo);
+    public void definirEstrategiaLeitura() {
+        int returnVal = fileSelector.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            this.arquivo = fileSelector.getSelectedFile();
+            if (this.arquivo.getPath().endsWith(".txt")) {
+                leitor = new LerTXT(this.arquivo);
+            } else {
+                leitor = new LerRTF(this.arquivo);
+            }
         } else {
-            estrategia = new InterageRTF(arquivo);
+            System.out.println("Acesso ao arquivo cancelado pelo usuário.");
         }
     }
+    
+    public void salvarRTF(boolean acao) {
+        // acao false = salvar
+        // acao true  = salvar como
+        try {
+            if ((this.arquivo == null) || (acao)) {
+                int returnVal = fileSelector.showSaveDialog(this.pagina);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    this.arquivo = fileSelector.getSelectedFile();
+                }
+            }
+            String caminho = this.arquivo.getPath();
+            StyledDocument doc = this.pagina.getStyledDocument();
+            RTFEditorKit kit = new RTFEditorKit();
+            if (!(caminho.endsWith(".rtf"))) {
+                caminho = caminho + ".rtf";
+            }
+            try {
+                FileOutputStream outStream = new FileOutputStream(caminho);
+                kit.write(outStream, doc, 0, doc.getLength());
+                outStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
 
-    public JPanel getPainelFundoDireito() {
-        return painelFundoDireito;
     }
-
-    public JPanel getPainelFundoEsquerdo() {
-        return painelFundoEsquerdo;
+    
+    public void salvarTXT(boolean acao) {
+        if ((this.arquivo == null) || (acao)) {
+            int returnVal = fileSelector.showSaveDialog(this.pagina);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                this.arquivo = fileSelector.getSelectedFile();
+            }
+        }
+        String caminho = this.arquivo.getPath();
+        if (!(caminho.endsWith(".txt"))) {
+            caminho = caminho + ".txt";
+        }
+        try {
+            FileWriter arq = new FileWriter(caminho);
+            BufferedWriter escreverArquivo = new BufferedWriter(arq);
+            escreverArquivo.write(this.pagina.getText());
+            escreverArquivo.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Body.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
-
-    public JPanel getPainelSuperior1() {
-        return painelSuperior1;
+    
+    public JTextPane getPagina() {
+        return this.pagina;
     }
-
-    public JPanel getPainelSuperior2() {
-        return painelSuperior2;
+    
+    public JToggleButton getBotaoModoCodigo() {
+        return this.botaoModoCodigo;
     }
-
+    
     public JSlider getControleDeslizanteMargemDireita() {
         return controleDeslizanteMargemDireita;
     }
@@ -792,4 +838,30 @@ public class Body extends javax.swing.JFrame implements Observador {
         return botaoModoNoturno;
     }
 
+    public JPanel getPainelBackground() {
+        return painelBackground;
+    }
+
+    public JComboBox getComboFonte() {
+        return comboFonte;
+    }
+    
+    public JComboBox getComboTamanhoFonte() {
+        return comboTamanhoFonte;
+    }
+    
+    private void envia() {
+        if (!pagina.getText().isEmpty()) {
+            try{
+                if (!InetAddress.getLocalHost().getHostAddress().equalsIgnoreCase(conexao.getIp())) {
+                    conexao.envia(pagina.getText());
+                    pagina.setText("");
+                } else {
+                    pagina.setText("");
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+    
 }

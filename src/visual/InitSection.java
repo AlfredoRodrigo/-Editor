@@ -73,6 +73,8 @@ public class InitSection extends javax.swing.JFrame implements Observado {
         labelTituloLogin = new javax.swing.JLabel();
         labelNomeLogin = new javax.swing.JLabel();
         nomeTextLogin = new javax.swing.JTextField();
+        labelIPLogin = new javax.swing.JLabel();
+        IPTextLogin = new javax.swing.JTextField();
         botaoRadioCriarSecao = new javax.swing.JRadioButton();
         botaoRadioInserirLink = new javax.swing.JRadioButton();
         linkTextLogin = new javax.swing.JTextField();
@@ -95,6 +97,16 @@ public class InitSection extends javax.swing.JFrame implements Observado {
         nomeTextLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nomeTextLoginActionPerformed(evt);
+            }
+        });
+
+        labelIPLogin.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        labelIPLogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelIPLogin.setText("IP:");
+
+        IPTextLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                IPTextLoginActionPerformed(evt);
             }
         });
 
@@ -158,7 +170,9 @@ public class InitSection extends javax.swing.JFrame implements Observado {
                                 .addComponent(linkTextLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(nomeTextLogin)
                                 .addComponent(labelNomeLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(botaoRadioInserirLink)))))
+                                .addComponent(botaoRadioInserirLink))
+                            .addComponent(IPTextLogin)
+                            .addComponent(labelIPLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         painelLoginLayout.setVerticalGroup(
@@ -170,13 +184,17 @@ public class InitSection extends javax.swing.JFrame implements Observado {
                 .addComponent(labelNomeLogin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nomeTextLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addComponent(labelIPLogin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(IPTextLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addComponent(botaoRadioCriarSecao)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botaoRadioInserirLink)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(linkTextLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
                 .addGroup(painelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(botaoEntrar)
                     .addComponent(botaoCriarSecao))
@@ -209,10 +227,11 @@ public class InitSection extends javax.swing.JFrame implements Observado {
             } else {
                 if (botaoRadioInserirLink.isSelected()) {
                     String host = linkTextLogin.getText();
-                    int porta = 8080;
+                    int porta = 5000;
                     String nome = nomeTextLogin.getText();
                     bodiesNames.add(nomeTextLogin.getText());
-                    Observador body = new Body(nomeTextLogin.getText(), this, pagina);
+                    conexao = new Conexao(IPTextLogin.getText(), porta, nome);
+                    Observador body = new Body(nomeTextLogin.getText(), this, pagina, conexao);
                     this.incluirObservador(body);
                 } else {
                     try {
@@ -221,7 +240,8 @@ public class InitSection extends javax.swing.JFrame implements Observado {
                         int porta = 8080;
                         String nome = nomeTextLogin.getText();
                         bodiesNames.add(nomeTextLogin.getText());
-                        Observador body = new Body(nomeTextLogin.getText(), this, pagina);
+                        conexao = new Conexao(IPTextLogin.getText(), porta, nome);
+                        Observador body = new Body(nomeTextLogin.getText(), this, pagina, conexao);
                         this.incluirObservador(body);
                     } catch (UnknownHostException ex) {
                         Logger.getLogger(InitSection.class.getName()).log(Level.SEVERE, null, ex);
@@ -266,6 +286,10 @@ public class InitSection extends javax.swing.JFrame implements Observado {
         botaoEntrarActionPerformed(evt);
     }//GEN-LAST:event_botaoCriarSecaoActionPerformed
 
+    private void IPTextLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IPTextLoginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_IPTextLoginActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -303,11 +327,13 @@ public class InitSection extends javax.swing.JFrame implements Observado {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField IPTextLogin;
     private javax.swing.JButton botaoCriarSecao;
     private javax.swing.JButton botaoEntrar;
     private javax.swing.JRadioButton botaoRadioCriarSecao;
     private javax.swing.JRadioButton botaoRadioInserirLink;
     private javax.swing.ButtonGroup botoesRadioInitSection;
+    private javax.swing.JLabel labelIPLogin;
     private javax.swing.JLabel labelNomeLogin;
     private javax.swing.JLabel labelTituloLogin;
     private javax.swing.JTextField linkTextLogin;
@@ -318,6 +344,7 @@ public class InitSection extends javax.swing.JFrame implements Observado {
     private static InitSection instancia = null;
     private List<Observador> bodies;
     private JTextPane pagina;
+    private Conexao conexao;
     private List<String> bodiesNames;
     // End of personal variables declaration
     

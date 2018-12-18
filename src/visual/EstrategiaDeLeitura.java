@@ -12,9 +12,6 @@ import javax.swing.JTextPane;
  *
  * @author Alfredo Silva
  */
-public interface Estrategia {
-    public String lerDocumento();
-    public void escreverDocumento(JTextPane pagina);
-    public File getArquivo();
-    public void setArquivo(File arquivo);
+public interface EstrategiaDeLeitura {
+    public JTextPane executar(File arquivo);
 }
