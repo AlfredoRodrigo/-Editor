@@ -115,6 +115,10 @@ public class Conexao {
         return ip;
     }
     
+    public String getMensagem() {
+        return mensagem;
+    }
+    
     public void notifica(String mensagem) {
         this.mensagem = mensagem;
         //notificar observadores
