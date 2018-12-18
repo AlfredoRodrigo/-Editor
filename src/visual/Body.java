@@ -503,7 +503,8 @@ public class Body extends javax.swing.JFrame implements Observador {
         // onde poderei chamar pai.notificarObservadores()
         fachada.modoCodigo();
         try {
-            envia(this.pagina.getText());
+            String texto = this.pagina.getText();
+            envia(Character.toString(evt.getKeyChar()));
             atualizar(this.pagina.getStyledDocument());
         } catch (NullPointerException ex) {
             //JOptionPane.showMessageDialog(this, "O usuário provedor do documento encerrou a seção.\nEste documento não pode mais ser editado por você.", "Seção encerrada", JOptionPane.ERROR_MESSAGE);
