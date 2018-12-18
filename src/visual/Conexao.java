@@ -30,13 +30,11 @@ public class Conexao {
     private int porta; //nome do host (ipconfig /all)
     private String name;
     private String mensagem;
-    private JTextPane pagina;
     
-    public Conexao(String ip, int porta, String nome, JTextPane pagina) {
+    public Conexao(String ip, int porta, String nome) {
         this.ip = ip;
         this.porta = porta;
         this.name = nome;
-        this.pagina = pagina;
         new Thread(new Recebe()).start();
     }
     
@@ -66,7 +64,6 @@ public class Conexao {
                                 msg += (char) b[i];
                             }
                         }
-                        pagina.setText(pagina.getText() + msg);
                     } catch (Exception e) {
                         System.out.println("erro");
                         try {
