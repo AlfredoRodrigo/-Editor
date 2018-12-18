@@ -541,7 +541,10 @@ public class Body extends javax.swing.JFrame implements Observador {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Body(nomeObservador, instancia, pagina, conexao).setVisible(true);
-                new Thread(conexao.new Envia(pagina.getText())).start();
+                Conexao.Envia envia = conexao.new Envia(pagina.getText());
+                conexao.envia(pagina.getText());
+                Thread t = new Thread(envia);
+                t.start();
             }
         });
     }
