@@ -17,6 +17,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTextPane;
 import javax.swing.text.StyledDocument;
 
 /**
@@ -29,11 +30,13 @@ public class Conexao {
     private int porta; //nome do host (ipconfig /all)
     private String name;
     private String mensagem;
+    private JTextPane pagina;
     
-    public Conexao(String ip, int porta, String nome) {
+    public Conexao(String ip, int porta, String nome, JTextPane pagina) {
         this.ip = ip;
         this.porta = porta;
         this.name = nome;
+        this.pagina = pagina;
         new Thread(new Recebe()).start();
     }
     
@@ -63,7 +66,7 @@ public class Conexao {
                                 msg += (char) b[i];
                             }
                         }
-                        notifica(msg);
+                        pagina.setText(pagina.getText() + msg);
                     } catch (Exception e) {
                         System.out.println("erro");
                         try {

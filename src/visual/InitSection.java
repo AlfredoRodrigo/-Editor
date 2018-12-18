@@ -230,7 +230,7 @@ public class InitSection extends javax.swing.JFrame implements Observado {
                     int porta = 5000;
                     String nome = nomeTextLogin.getText();
                     bodiesNames.add(nomeTextLogin.getText());
-                    conexao = new Conexao(IPTextLogin.getText(), porta, nome);
+                    conexao = new Conexao(IPTextLogin.getText(), porta, nome, this.pagina);
                     Observador body = new Body(nomeTextLogin.getText(), this, pagina, conexao);
                     this.incluirObservador(body);
                 } else {
@@ -240,7 +240,7 @@ public class InitSection extends javax.swing.JFrame implements Observado {
                         int porta = 8080;
                         String nome = nomeTextLogin.getText();
                         bodiesNames.add(nomeTextLogin.getText());
-                        conexao = new Conexao(IPTextLogin.getText(), porta, nome);
+                        conexao = new Conexao(IPTextLogin.getText(), porta, nome, this.pagina);
                         Observador body = new Body(nomeTextLogin.getText(), this, pagina, conexao);
                         this.incluirObservador(body);
                     } catch (UnknownHostException ex) {
